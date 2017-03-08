@@ -19,18 +19,22 @@
 
 #pragma mark -initProperty
 
-- (instancetype)initWithFrame:(CGRect)frame
+- (instancetype)init
 {
-    self = [super initWithFrame:frame];
+    self = [super init];
     if (self) {
         self.backgroundColor = [UIColor whiteColor];
         self.layer.borderColor = [[UIColor grayColor] CGColor];
         self.layer.borderWidth = 0.3;
         self.layer.cornerRadius = 3;
         self.removeFlag = YES;
-        [self addSubview:self.tableView];
     }
     return self;
+}
+
+- (void)setFrame:(CGRect)frame {
+    [super setFrame:frame];
+    [self addSubview:self.tableView];
 }
 
 -(void)setData:(NSMutableArray *)data {
@@ -55,7 +59,7 @@
 
 - (UITableView *)tableView {
     if (!_tableView) {
-        _tableView = [[UITableView alloc]initWithFrame:CGRectMake(0, 0, self.frame.size.width,self.frame.size.height) style:UITableViewStylePlain];
+        _tableView = [[UITableView alloc]init];
         _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
         _tableView.tableFooterView = [[UIView alloc]init];
         _tableView.backgroundColor = [UIColor clearColor];
@@ -63,6 +67,7 @@
         _tableView.dataSource = self;
         
     }
+    _tableView.frame = CGRectMake(0, 0, self.frame.size.width,self.frame.size.height);
     return _tableView;
 }
 

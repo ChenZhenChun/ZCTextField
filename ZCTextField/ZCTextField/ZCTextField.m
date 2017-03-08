@@ -34,17 +34,24 @@
 
 - (TextFieldTipView *)tipView {
     if (!_tipView) {
-        //因为用autolayout加载的控件没有frame的概念，
-        //如果没有让autolayout算好位置的话拿出来的frame都是xib上写的值。所以必须加上layoutIfNeeded
+        _tipView = [[TextFieldTipView alloc]init];
+        _tipView.delegate = self;
+    }
+    return _tipView;
+}
+
+- (void)configTipViewFrame {
+    //因为用autolayout加载的控件没有frame的概念，
+    //如果没有让autolayout算好位置的话拿出来的frame都是xib上写的值。所以必须加上layoutIfNeeded
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
         [self layoutIfNeeded];
         [[self superview] layoutIfNeeded];
         [self setNeedsDisplay];
         //获取到textFiel在控制器上的坐标
         CGPoint textFieldPoint = [[self superview]convertPoint:self.frame.origin toView:self.currentController.view];
-        _tipView = [[TextFieldTipView alloc]initWithFrame:CGRectMake(textFieldPoint.x, textFieldPoint.y+self.frame.size.height, self.frame.size.width,tipViewH)];
-        _tipView.delegate = self;
-    }
-    return _tipView;
+        self.tipView.frame = CGRectMake(textFieldPoint.x, textFieldPoint.y+self.frame.size.height, self.frame.size.width,tipViewH);
+    });
 }
 
 
@@ -70,10 +77,11 @@
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF BEGINSWITH[cd] %@ ",textField.text];
     NSArray *data = [self.data filteredArrayUsingPredicate:predicate];
     if (data.count != 0) {
+        self.tipView.data = [data mutableCopy];
         if (self.tipView.isRemoved) {
+            [self configTipViewFrame];
             [self.tipView showTipView:self.currentController.view];
         }
-        self.tipView.data = [data mutableCopy];
     }else{
         [_tipView hiddenTipView];
     }
