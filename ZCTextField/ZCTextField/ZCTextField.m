@@ -43,15 +43,12 @@
 - (void)configTipViewFrame {
     //因为用autolayout加载的控件没有frame的概念，
     //如果没有让autolayout算好位置的话拿出来的frame都是xib上写的值。所以必须加上layoutIfNeeded
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        [self layoutIfNeeded];
-        [[self superview] layoutIfNeeded];
-        [self setNeedsDisplay];
-        //获取到textFiel在控制器上的坐标
-        CGPoint textFieldPoint = [[self superview]convertPoint:self.frame.origin toView:self.currentController.view];
-        self.tipView.frame = CGRectMake(textFieldPoint.x, textFieldPoint.y+self.frame.size.height, self.frame.size.width,tipViewH);
-    });
+    [self layoutIfNeeded];
+    [[self superview] layoutIfNeeded];
+    [self setNeedsDisplay];
+    //获取到textFiel在控制器上的坐标
+    CGPoint textFieldPoint = [[self superview]convertPoint:self.frame.origin toView:self.currentController.view];
+    self.tipView.frame = CGRectMake(textFieldPoint.x, textFieldPoint.y+self.frame.size.height, self.frame.size.width,tipViewH);
 }
 
 
